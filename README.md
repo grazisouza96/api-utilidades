@@ -21,6 +21,14 @@ npm start
 
 Depois acesse **http://localhost:3001**.
 
+## Testes automatizados
+
+O projeto tem uma suíte de testes (Jest + Supertest) cobrindo as 4 funcionalidades, incluindo casos de erro (dados inválidos, campos obrigatórios faltando, etc).
+
+```bash
+npm test
+```
+
 ## Observação
 
 Os links encurtados ficam guardados em memória: ao reiniciar o servidor, a lista é zerada.
