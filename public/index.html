@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>API de Utilidades</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topo">
+    <h1>🛠️ API de Utilidades</h1>
+    <p>Encurtador de links, gerador de senhas, QR Code e conversor de texto — tudo rodando no meu próprio servidor Node.js.</p>
+  </header>
+
+  <main class="grid">
+
+    <!-- ENCURTADOR -->
+    <section class="card">
+      <h2>🔗 Encurtador de Links</h2>
+      <form id="form-encurtar">
+        <input type="url" id="encurtar-url" placeholder="https://exemplo.com/pagina-bem-longa" required />
+        <button type="submit">Encurtar</button>
+      </form>
+      <div id="encurtar-resultado" class="resultado"></div>
+      <div>
+        <h3>Links criados</h3>
+        <ul id="lista-links" class="lista"></ul>
+      </div>
+    </section>
+
+    <!-- SENHAS -->
+    <section class="card">
+      <h2>🔐 Gerador de Senhas</h2>
+      <form id="form-senha">
+        <label>Tamanho: <input type="number" id="senha-tamanho" min="4" max="128" value="16" /></label>
+        <label><input type="checkbox" id="senha-maiusculas" checked /> Maiúsculas</label>
+        <label><input type="checkbox" id="senha-minusculas" checked /> Minúsculas</label>
+        <label><input type="checkbox" id="senha-numeros" checked /> Números</label>
+        <label><input type="checkbox" id="senha-simbolos" checked /> Símbolos</label>
+        <button type="submit">Gerar senha</button>
+      </form>
+      <div id="senha-resultado" class="resultado"></div>
+    </section>
+
+    <!-- QR CODE -->
+    <section class="card">
+      <h2>🔲 Gerador de QR Code</h2>
+      <form id="form-qrcode">
+        <input type="text" id="qrcode-texto" placeholder="Texto ou link" required />
+        <button type="submit">Gerar QR Code</button>
+      </form>
+      <div id="qrcode-resultado" class="resultado"></div>
+    </section>
+
+    <!-- CONVERSOR -->
+    <section class="card">
+      <h2>🧩 Conversor de Texto</h2>
+      <form id="form-conversor">
+        <textarea id="conversor-texto" placeholder="Digite um texto..." required></textarea>
+        <div class="linha-botoes">
+          <button type="button" data-acao="hash-md5">MD5</button>
+          <button type="button" data-acao="hash-sha1">SHA1</button>
+          <button type="button" data-acao="hash-sha256">SHA256</button>
+          <button type="button" data-acao="base64-codificar">Base64 ⇥</button>
+          <button type="button" data-acao="base64-decodificar">⇤ Base64</button>
+        </div>
+      </form>
+      <div id="conversor-resultado" class="resultado"></div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
