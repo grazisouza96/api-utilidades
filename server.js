@@ -1,19 +1,54 @@
 const path = require('path');
 const crypto = require('crypto');
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 const QRCode = require('qrcode');
 const { nanoid } = require('nanoid');
+const swaggerSpec = require('./swagger');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ===================== ENCURTADOR DE LINKS =====================
 // Guardado em memória: os links somem quando o servidor reinicia.
 const links = new Map();
 
+/**
+ * @swagger
+ * /api/encurtar:
+ *   post:
+ *     summary: Encurta uma URL
+ *     tags: [Encurtador de links]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [url]
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 example: https://www.exemplo.com/pagina-bem-longa
+ *     responses:
+ *       200:
+ *         description: Link curto criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 codigo:
+ *                   type: string
+ *                 urlCurta:
+ *                   type: string
+ *       400:
+ *         description: URL ausente ou inválida
+ */
 app.post('/api/encurtar', (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'Informe uma URL.' });
@@ -28,11 +63,39 @@ app.post('/api/encurtar', (req, res) => {
   res.json({ codigo, urlCurta: `${req.protocol}://${req.get('host')}/r/${codigo}` });
 });
 
+/**
+ * @swagger
+ * /api/links:
+ *   get:
+ *     summary: Lista todos os links encurtados criados nesta sessão do servidor
+ *     tags: [Encurtador de links]
+ *     responses:
+ *       200:
+ *         description: Lista de links
+ */
 app.get('/api/links', (req, res) => {
   const lista = [...links.entries()].map(([codigo, dados]) => ({ codigo, ...dados }));
   res.json(lista.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm)));
 });
 
+/**
+ * @swagger
+ * /r/{codigo}:
+ *   get:
+ *     summary: Redireciona para a URL original de um link encurtado
+ *     tags: [Encurtador de links]
+ *     parameters:
+ *       - in: path
+ *         name: codigo
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       302:
+ *         description: Redirecionamento para a URL original
+ *       404:
+ *         description: Código não encontrado
+ */
 app.get('/r/:codigo', (req, res) => {
   const link = links.get(req.params.codigo);
   if (!link) return res.status(404).send('Link não encontrado.');
@@ -41,6 +104,41 @@ app.get('/r/:codigo', (req, res) => {
 });
 
 // ===================== GERADOR DE SENHAS =====================
+/**
+ * @swagger
+ * /api/senha:
+ *   post:
+ *     summary: Gera uma senha aleatória segura
+ *     tags: [Gerador de senhas]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tamanho:
+ *                 type: integer
+ *                 default: 16
+ *                 minimum: 4
+ *                 maximum: 128
+ *               maiusculas:
+ *                 type: boolean
+ *                 default: true
+ *               minusculas:
+ *                 type: boolean
+ *                 default: true
+ *               numeros:
+ *                 type: boolean
+ *                 default: true
+ *               simbolos:
+ *                 type: boolean
+ *                 default: true
+ *     responses:
+ *       200:
+ *         description: Senha gerada
+ *       400:
+ *         description: Tamanho inválido ou nenhum tipo de caractere selecionado
+ */
 app.post('/api/senha', (req, res) => {
   const {
     tamanho = 16,
@@ -76,6 +174,29 @@ app.post('/api/senha', (req, res) => {
 });
 
 // ===================== GERADOR DE QR CODE =====================
+/**
+ * @swagger
+ * /api/qrcode:
+ *   post:
+ *     summary: Gera um QR Code a partir de um texto ou link
+ *     tags: [QR Code]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [texto]
+ *             properties:
+ *               texto:
+ *                 type: string
+ *                 example: https://www.exemplo.com
+ *     responses:
+ *       200:
+ *         description: Imagem do QR Code em base64 (data URL)
+ *       400:
+ *         description: Texto não informado
+ */
 app.post('/api/qrcode', async (req, res) => {
   const { texto } = req.body;
   if (!texto) return res.status(400).json({ error: 'Informe o texto ou link para gerar o QR Code.' });
@@ -88,6 +209,32 @@ app.post('/api/qrcode', async (req, res) => {
 });
 
 // ===================== CONVERSOR DE TEXTO =====================
+/**
+ * @swagger
+ * /api/hash:
+ *   post:
+ *     summary: Calcula o hash de um texto
+ *     tags: [Conversor de texto]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [texto]
+ *             properties:
+ *               texto:
+ *                 type: string
+ *               algoritmo:
+ *                 type: string
+ *                 enum: [md5, sha1, sha256]
+ *                 default: sha256
+ *     responses:
+ *       200:
+ *         description: Hash calculado
+ *       400:
+ *         description: Texto não informado ou algoritmo inválido
+ */
 app.post('/api/hash', (req, res) => {
   const { texto, algoritmo = 'sha256' } = req.body;
   if (!texto) return res.status(400).json({ error: 'Informe o texto.' });
@@ -98,6 +245,32 @@ app.post('/api/hash', (req, res) => {
   res.json({ resultado });
 });
 
+/**
+ * @swagger
+ * /api/base64:
+ *   post:
+ *     summary: Codifica ou decodifica um texto em Base64
+ *     tags: [Conversor de texto]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [texto]
+ *             properties:
+ *               texto:
+ *                 type: string
+ *               modo:
+ *                 type: string
+ *                 enum: [codificar, decodificar]
+ *                 default: codificar
+ *     responses:
+ *       200:
+ *         description: Texto processado
+ *       400:
+ *         description: Texto não informado ou inválido para o modo escolhido
+ */
 app.post('/api/base64', (req, res) => {
   const { texto, modo = 'codificar' } = req.body;
   if (!texto) return res.status(400).json({ error: 'Informe o texto.' });
