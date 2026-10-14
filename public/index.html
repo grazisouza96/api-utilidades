@@ -8,21 +8,33 @@
 </head>
 <body>
   <header class="topo">
-    <h1>🛠️ API de Utilidades</h1>
-    <p>Encurtador de links, gerador de senhas, QR Code e conversor de texto — tudo rodando no meu próprio servidor Node.js.</p>
+    <div class="topo-conteudo">
+      <span class="selo">● on-line</span>
+      <h1>API de Utilidades</h1>
+      <p>Encurtador de links, gerador de senhas, QR Code e conversor de texto — tudo rodando no meu próprio servidor Node.js.</p>
+      <div class="badges">
+        <span class="badge-tech">Node.js</span>
+        <span class="badge-tech">Express</span>
+        <span class="badge-tech">REST API</span>
+      </div>
+    </div>
   </header>
 
   <main class="grid">
 
     <!-- ENCURTADOR -->
     <section class="card">
-      <h2>🔗 Encurtador de Links</h2>
+      <div class="card-titulo">
+        <span class="icone icone-azul">🔗</span>
+        <h2>Encurtador de Links</h2>
+      </div>
+      <p class="card-desc">Cole uma URL longa e receba um link curto, pronto para compartilhar.</p>
       <form id="form-encurtar">
         <input type="url" id="encurtar-url" placeholder="https://exemplo.com/pagina-bem-longa" required />
         <button type="submit">Encurtar</button>
       </form>
-      <div id="encurtar-resultado" class="resultado"></div>
-      <div>
+      <div id="encurtar-resultado" class="resultado vazio"></div>
+      <div class="links-criados">
         <h3>Links criados</h3>
         <ul id="lista-links" class="lista"></ul>
       </div>
@@ -30,31 +42,45 @@
 
     <!-- SENHAS -->
     <section class="card">
-      <h2>🔐 Gerador de Senhas</h2>
+      <div class="card-titulo">
+        <span class="icone icone-roxo">🔐</span>
+        <h2>Gerador de Senhas</h2>
+      </div>
+      <p class="card-desc">Senhas fortes, geradas com critérios aleatórios e seguros.</p>
       <form id="form-senha">
-        <label>Tamanho: <input type="number" id="senha-tamanho" min="4" max="128" value="16" /></label>
-        <label><input type="checkbox" id="senha-maiusculas" checked /> Maiúsculas</label>
-        <label><input type="checkbox" id="senha-minusculas" checked /> Minúsculas</label>
-        <label><input type="checkbox" id="senha-numeros" checked /> Números</label>
-        <label><input type="checkbox" id="senha-simbolos" checked /> Símbolos</label>
+        <label class="campo-tamanho">Tamanho <input type="number" id="senha-tamanho" min="4" max="128" value="16" /></label>
+        <div class="opcoes">
+          <label><input type="checkbox" id="senha-maiusculas" checked /> Maiúsculas</label>
+          <label><input type="checkbox" id="senha-minusculas" checked /> Minúsculas</label>
+          <label><input type="checkbox" id="senha-numeros" checked /> Números</label>
+          <label><input type="checkbox" id="senha-simbolos" checked /> Símbolos</label>
+        </div>
         <button type="submit">Gerar senha</button>
       </form>
-      <div id="senha-resultado" class="resultado"></div>
+      <div id="senha-resultado" class="resultado vazio mono"></div>
     </section>
 
     <!-- QR CODE -->
     <section class="card">
-      <h2>🔲 Gerador de QR Code</h2>
+      <div class="card-titulo">
+        <span class="icone icone-verde">▦</span>
+        <h2>Gerador de QR Code</h2>
+      </div>
+      <p class="card-desc">Transforme qualquer texto ou link em um QR Code pronto pra escanear.</p>
       <form id="form-qrcode">
         <input type="text" id="qrcode-texto" placeholder="Texto ou link" required />
         <button type="submit">Gerar QR Code</button>
       </form>
-      <div id="qrcode-resultado" class="resultado"></div>
+      <div id="qrcode-resultado" class="resultado vazio qrcode-area"></div>
     </section>
 
     <!-- CONVERSOR -->
     <section class="card">
-      <h2>🧩 Conversor de Texto</h2>
+      <div class="card-titulo">
+        <span class="icone icone-amarelo">🧩</span>
+        <h2>Conversor de Texto</h2>
+      </div>
+      <p class="card-desc">Gere hashes ou converta texto em Base64 em um clique.</p>
       <form id="form-conversor">
         <textarea id="conversor-texto" placeholder="Digite um texto..." required></textarea>
         <div class="linha-botoes">
@@ -65,10 +91,14 @@
           <button type="button" data-acao="base64-decodificar">⇤ Base64</button>
         </div>
       </form>
-      <div id="conversor-resultado" class="resultado"></div>
+      <div id="conversor-resultado" class="resultado vazio mono"></div>
     </section>
 
   </main>
+
+  <footer class="rodape">
+    Feito por Grasiele · <a href="https://github.com/grazisouza96/api-utilidades" target="_blank">código no GitHub</a>
+  </footer>
 
   <script src="app.js"></script>
 </body>
