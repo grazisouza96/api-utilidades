@@ -1,3 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+
+// Garante um arquivo de dados limpo antes de carregar o servidor,
+// já que o encurtador agora persiste os links em disco.
+const ARQUIVO_LINKS_TESTE = path.join(__dirname, '..', 'data', 'links.test.json');
+try { fs.unlinkSync(ARQUIVO_LINKS_TESTE); } catch {}
+
 const request = require('supertest');
 const app = require('../server');
 

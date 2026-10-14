@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
@@ -14,8 +15,27 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ===================== ENCURTADOR DE LINKS =====================
-// Guardado em memória: os links somem quando o servidor reinicia.
-const links = new Map();
+// Persistido em arquivo: os links continuam disponíveis após reiniciar o servidor.
+const ARQUIVO_LINKS = path.join(
+  __dirname, 'data',
+  process.env.NODE_ENV === 'test' ? 'links.test.json' : 'links.json'
+);
+
+function carregarLinks() {
+  try {
+    const bruto = fs.readFileSync(ARQUIVO_LINKS, 'utf8');
+    return new Map(Object.entries(JSON.parse(bruto)));
+  } catch {
+    return new Map();
+  }
+}
+
+function salvarLinks() {
+  fs.mkdirSync(path.dirname(ARQUIVO_LINKS), { recursive: true });
+  fs.writeFileSync(ARQUIVO_LINKS, JSON.stringify(Object.fromEntries(links), null, 2));
+}
+
+const links = carregarLinks();
 
 /**
  * @swagger
@@ -60,6 +80,7 @@ app.post('/api/encurtar', (req, res) => {
 
   const codigo = nanoid(7);
   links.set(codigo, { url, criadoEm: new Date().toISOString(), acessos: 0 });
+  salvarLinks();
   res.json({ codigo, urlCurta: `${req.protocol}://${req.get('host')}/r/${codigo}` });
 });
 
@@ -100,6 +121,7 @@ app.get('/r/:codigo', (req, res) => {
   const link = links.get(req.params.codigo);
   if (!link) return res.status(404).send('Link não encontrado.');
   link.acessos += 1;
+  salvarLinks();
   res.redirect(link.url);
 });
 
