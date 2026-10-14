@@ -1,5 +1,8 @@
 # API de Utilidades
 
+🔗 **Demo ao vivo:** https://api-utilidades-94h2.onrender.com
+*(o plano gratuito "dorme" após um tempo sem uso — o primeiro acesso pode levar ~50s para carregar)*
+
 Servidor em Node.js/Express com quatro funcionalidades:
 
 - 🔗 **Encurtador de links** — `POST /api/encurtar`, redirecionamento em `GET /r/:codigo`
