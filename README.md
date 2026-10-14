@@ -32,4 +32,4 @@ npm test
 
 ## Observação
 
-Os links encurtados ficam guardados em memória: ao reiniciar o servidor, a lista é zerada.
+Os links encurtados ficam guardados em arquivo (`data/links.json`), sobrevivendo a reinícios do servidor. No plano gratuito do Render, porém, o disco é temporário: os links somem quando a plataforma reconstrói o serviço (a cada novo deploy, por exemplo). Rodando localmente, a persistência funciona normalmente entre reinícios.
