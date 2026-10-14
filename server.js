@@ -111,6 +111,10 @@ app.post('/api/base64', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`API de Utilidades rodando em http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`API de Utilidades rodando em http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
