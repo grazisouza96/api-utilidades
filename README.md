@@ -1,6 +1,7 @@
 # API de Utilidades
 
 🔗 **Demo ao vivo:** https://api-utilidades-94h2.onrender.com
+📘 **Documentação interativa (Swagger):** https://api-utilidades-94h2.onrender.com/api-docs
 *(o plano gratuito "dorme" após um tempo sem uso — o primeiro acesso pode levar ~50s para carregar)*
 
 Servidor em Node.js/Express com quatro funcionalidades:
